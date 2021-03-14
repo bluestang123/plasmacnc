@@ -181,6 +181,11 @@ void setup() {
       ftmp = ftmp2;
       timelimit = max(timelimit, ms + 2000);
  //     sevseg.setNumber(ftmp, 1);
+ 
+  // Print the set number Pin A0---new---
+ lcd.setCursor(0, 1);
+  lcd.print (ftmp); 
+  
     }
 
     i = (i + 1) % 10;
@@ -201,10 +206,6 @@ void setup() {
   i = 0;
   j = 1; // Keeps display from triggering until we've done BUFSIZE samples.
 
- // Print the set number Pin A0---new---
- 
-  lcd.setCursor(0, 1);
-  lcd.print (tmp * SCALE); 
 }
 
 
