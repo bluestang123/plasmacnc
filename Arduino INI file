@@ -39,19 +39,12 @@ The circuit:
 */
 
 
-// Need this for my common-cathod sevseg LCD.
-// The pins follow the schematic and were picked to try to make it lay out nicely.
-// not used in in this case 3-10-2021 date. 
-// #include <SevSeg.h>
 
 //Need to use for liquid crystal display LCD.---new---
 //Pin layout will be in schematic
 #include <LiquidCrystal.h>
 
-// SevSeg sevseg;
-// byte numDigits = 4;
-// byte digitPins[4] = {12, 10, 9, 2};
-// byte segmentPins[8] = {13, 8, 4, 6, 7, 11, 3, 5};
+
 
 //Initialize the library with the number of interface pins ---new----
 const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
@@ -60,7 +53,6 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 // Setting the scale for the converting analogRead values to volts.
 // 4.450 AREF voltage * 50 built-in voltage divider / 1023 resolution = 0.21749755 ADC counts per volt
 // As far as I can tell, the arithmetic below *does* get optimized out by the compiler.
-// 4.330 AREF voltage * 50 built-in voltage divider / 1023 resolution = 0.2116324535679374 ADC counts per volt ---new----
 #define SCALE (4.330*50/1023)
 
 // Threshold in ADC counts for when we say the torch is out of range.
@@ -131,28 +123,11 @@ void setup() {
   // so your shit will be totally broke if you don't set SAMP to a power of 2.
   while((1 << shift) != SAMP)
     shift++;
-
-  // Set up the LCD. Set an easily identifiable string (looks like "ABCD" all caps)
-  // and show it for a moment. This makes it easy to see when the arduino reboots.
-  //  sevseg.begin(COMMON_CATHODE, numDigits, digitPins, segmentPins, 0, 0, 1);
-  //  sevseg.setBrightness(50);
-  //  sevseg.setChars("a8c0");
-  //  for (i = 0; i < 500; i++) {
-  //    sevseg.refreshDisplay();
-  //    delay(1);
-  //  }
-
-
-
+  
   // Setup the LCD's columns and rows---new---; 
   
   lcd.begin(20, 4);
-  //brightness = 100; // set brightness of lcd backlight
-  //print a message to the LCD
-  //lcd.print("hello, world!") //from lcd example file;
   lcd.print ("Voltage Reading");
-
- 
   
   // Now enter the period where you can set the voltage via the potentiomenter.
   // Default 5s period, plus an extension 2s as long as you keep adjusting it.
@@ -180,19 +155,16 @@ void setup() {
     if (ftmp != ftmp2) {
       ftmp = ftmp2;
       timelimit = max(timelimit, ms + 2000);
- //     sevseg.setNumber(ftmp, 1);
  
   // Print the set number Pin A0---new---
  lcd.setCursor(0, 1);
   lcd.print (ftmp); 
-  
+ 
     }
 
     i = (i + 1) % 10;
     ms = millis();
 
-    // Need to continuously refresh the display for it to stay lit.
-//    sevseg.refreshDisplay();
   }
 
   // Convert the voltage target back into an int, for ADC comparison, with the scale the plasma pin uses.
@@ -205,9 +177,8 @@ void setup() {
   total = 0;
   i = 0;
   j = 1; // Keeps display from triggering until we've done BUFSIZE samples.
-
+  
 }
-
 
 void loop() {
 
@@ -256,42 +227,14 @@ void loop() {
       digitalWrite(UP, 0);
       digitalWrite(DOWN, 0);
   }
-
-
-  // Every DISP reads, update what's displayed on the screen with a slower average.
-  // This would be roughly 5 or 6 times per second at our current speeds.
- // if (!j) {
- //   sevseg.setNumber((float) ((disp / DISP) * SCALE), 1) //copied for new lcd below
-//    disp = 0 //copied for new lcd below
- // }
-
-
- 
-   // set the cursor to colmn 0 line 1----new---
-  //(note: line 1 is the second row, since your counting begins with 0):
-        // lcd.setCursor(0, 1) //lcd example file;
-
- // if (!j) {
- // lcd.setCursor((float) ((disp / DISP) * SCALE), 1);
- // disp = 1;
- //int a0Value = analogRead(analogPin); // read incomming plasma voltage divider reading
- // lcd.setCursor(2,4); //where to display the curser
- // sprintf(formattedValue, "%04d" , a0Value); //value format
- // disp = 0;
- // }
-
-  
-  // Print the number of seconds since reset and value comming from pin1
-       //lcd.print(millis()/1000) //lcd example file;
-  
-  //lcd.setCursor(0, 1);
-  //lcd.print (target * scale); 
-  //Print the voltage it currently reads from plasma pin A1
+     
+ //Print the voltage it currently reads from plasma pin A1
+  if (!j) {
   lcd.setCursor(0, 2);
-  lcd.print (diff * SCALE);
-  
-  // Need this to keep the display lit up.
-//  sevseg.refreshDisplay();
+  lcd.print ( (float) ((disp / DISP) * SCALE), 1 );
+  disp = 1;
+
+  }
 
   // Faster than modular arithmetic, by far. Doing that drops us down to ~3kS/sec.
   i = (i + 1) & (SAMP - 1);
