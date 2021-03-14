@@ -60,7 +60,8 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 // Setting the scale for the converting analogRead values to volts.
 // 4.450 AREF voltage * 50 built-in voltage divider / 1023 resolution = 0.21749755 ADC counts per volt
 // As far as I can tell, the arithmetic below *does* get optimized out by the compiler.
-#define SCALE (4.450*50/1023)
+// 4.330 AREF voltage * 50 built-in voltage divider / 1023 resolution = 0.2116324535679374 ADC counts per volt ---new----
+#define SCALE (4.330*50/1023)
 
 // Threshold in ADC counts for when we say the torch is out of range.
 // Multiply by SCALE for the threshold in volts.
@@ -150,6 +151,8 @@ void setup() {
   //print a message to the LCD
   //lcd.print("hello, world!") //from lcd example file;
   lcd.print ("Voltage Reading");
+
+ 
   
   // Now enter the period where you can set the voltage via the potentiomenter.
   // Default 5s period, plus an extension 2s as long as you keep adjusting it.
@@ -177,7 +180,7 @@ void setup() {
     if (ftmp != ftmp2) {
       ftmp = ftmp2;
       timelimit = max(timelimit, ms + 2000);
-//      sevseg.setNumber(ftmp, 1);
+ //     sevseg.setNumber(ftmp, 1);
     }
 
     i = (i + 1) % 10;
@@ -197,6 +200,11 @@ void setup() {
   total = 0;
   i = 0;
   j = 1; // Keeps display from triggering until we've done BUFSIZE samples.
+
+ // Print the set number Pin A0---new---
+ 
+  lcd.setCursor(0, 1);
+  lcd.print (tmp * SCALE); 
 }
 
 
@@ -265,7 +273,7 @@ void loop() {
  // if (!j) {
  // lcd.setCursor((float) ((disp / DISP) * SCALE), 1);
  // disp = 1;
-//  int a0Value = analogRead(analogPin); // read incomming plasma voltage divider reading
+ //int a0Value = analogRead(analogPin); // read incomming plasma voltage divider reading
  // lcd.setCursor(2,4); //where to display the curser
  // sprintf(formattedValue, "%04d" , a0Value); //value format
  // disp = 0;
@@ -274,13 +282,13 @@ void loop() {
   
   // Print the number of seconds since reset and value comming from pin1
        //lcd.print(millis()/1000) //lcd example file;
-  // Print the set number Pin A0
-  lcd.setCursor(0, 1);
-  lcd.print (target); 
+  
+  //lcd.setCursor(0, 1);
+  //lcd.print (target * scale); 
   //Print the voltage it currently reads from plasma pin A1
   lcd.setCursor(0, 2);
-  lcd.print (ADJUST);
-
+  lcd.print (diff * SCALE);
+  
   // Need this to keep the display lit up.
 //  sevseg.refreshDisplay();
 
