@@ -1,27 +1,17 @@
-/* A braindead plasma torch THC. Goes along with the board schematic in this repo.
-The gist of how this is works is, on startup, you read the potentiometer and
-pick a set point. Then it reads the analog pin for the plasma voltage, does
-comparisons to that setpoint, and triggers the optocouplers accordingly.
-There's a little bit of smoothing that goes into to the ADC reads to improve
-the signal's stability a bit, but we can't do too much, since otherwise, the
-LinuxCNC can't respond fast enough when the torch height really is changing.
-I do a few tricks in here to make sure the loop() function runs quickly. Stuff
-like only reading the setpoint on startup (so if you want to adjust it, hit the
-reset button), using bitwise shifts for division, etc. Last I checked, this was
-able to do about 6000 samples per second, whereas the maximum you could get
-from simply looping analogRead() is supposed to be 9000 samples per second
-(with 10 bit precision).
-Two more noteworthy quirks:
-Firstly, while we let the signals for the plasma change rather rapidly, we only
-update the display several times a second and give it a much, much longer
-average. This just makes it easier on the eyes.
-Secondly, this is going to be giving the "UP" signal whenever the plasma
-is not cutting (since the voltage will be 0), so it is important to use
-LinuxCNC's HAL configs to only respect the THC's signals once the torch is
-cutting and is not piercing or cornering. The "thcud" component should help
-with that, as well as additional YouTube videos and files coming soon.
-(c) The Swolesoft Development Group, 2019
-License: http://250bpm.com/blog:82
+/*
+ I am using code from SWOLEBRO THC design located here: 
+
+https://github.com/swolebro/swolebro-youtube
+
+His youtube page is located here:
+
+https://www.youtube.com/channel/UCRMLI3S0AFukV1tzX6Cl2Cw
+
+I have adjusted his orignal code to add a 20x4 LCD using th eliquid crystal display. I wanted to have it say Voltage reading, 
+then the Potentiameter set voltage on the next line, and finally the Voltage display comming from the plasma cutter.
+
+This is currently the working code below in the lab. i have not live tested it yet. I will test it soon with a Harbor Frieght 62204 Plsama cutter i bought a few years ago. 
+I also put a 50:1 voltage divider in this plsama cutter to allow me to use an arduino THC that SWOLEBRO created.
 
 The circuit:
  * LCD RS pin to digital pin 12
