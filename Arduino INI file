@@ -7,11 +7,12 @@ His youtube page is located here:
 
 https://www.youtube.com/channel/UCRMLI3S0AFukV1tzX6Cl2Cw
 
-I have adjusted his orignal code to add a 20x4 LCD using th eliquid crystal display. I wanted to have it say Voltage reading, 
-then the Potentiameter set voltage on the next line, and finally the Voltage display comming from the plasma cutter.
+I have adjusted his original code to add a 20x4 LCD using the liquid crystal display. I wanted to have it say Voltage reading, 
+then the Potentiometer set voltage on the next line, and finally the Voltage display coming from the plasma cutter.
 
-This is currently the working code below in the lab. i have not live tested it yet. I will test it soon with a Harbor Frieght 62204 Plsama cutter i bought a few years ago. 
-I also put a 50:1 voltage divider in this plsama cutter to allow me to use an arduino THC that SWOLEBRO created.
+This is currently the working code below in the lab. i have not live tested it yet. I will test it soon with a Harbor Freight 62204 Plasma cutter i bought a few years ago. 
+I also put a 50:1 voltage divider in this plasma cutter to allow me to use an Arduino THC that SWOLEBRO created.
+
 
 The circuit:
  * LCD RS pin to digital pin 12
